@@ -42,7 +42,7 @@ namespace FileExtensionRenamer.ViewModel
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MainViewModel"/> class.
+        /// Initializes a new instance of the <see cref="MainViewModel" /> class.
         /// </summary>
         public MainViewModel()
         {
@@ -126,6 +126,8 @@ namespace FileExtensionRenamer.ViewModel
                 {
                     this._fileExtension = value;
                     this.RaisePropertyChanged(() => this.FileExtension);
+                    this._scanned = false;
+                    this.CommandReplace.RaiseCanExecuteChanged();
                     this.CommandScan.RaiseCanExecuteChanged();
                 }
             }
@@ -135,7 +137,7 @@ namespace FileExtensionRenamer.ViewModel
         /// Gets or sets a value indicating whether this instance is busy.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is busy; otherwise, <c>false</c>.
+        /// <c>true</c> if this instance is busy; otherwise, <c>false</c>.
         /// </value>
         public bool IsBusy
         {
@@ -215,6 +217,8 @@ namespace FileExtensionRenamer.ViewModel
                 {
                     this._rootFolder = value;
                     this.RaisePropertyChanged(() => this.RootFolder);
+                    this._scanned = false;
+                    this.CommandReplace.RaiseCanExecuteChanged();
                     this.CommandScan.RaiseCanExecuteChanged();
                 }
             }
@@ -224,7 +228,8 @@ namespace FileExtensionRenamer.ViewModel
         /// Gets or sets a value indicating whether the files should be removed from the Filesystem.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if the files should be removed from the Filesystem; otherwise, a copy with the new filename will be created <c>false</c>.
+        /// <c>true</c> if the files should be removed from the Filesystem; otherwise, a copy with the new filename will be created
+        /// <c>false</c>.
         /// </value>
         public bool ShouldRemove
         {
@@ -284,6 +289,7 @@ namespace FileExtensionRenamer.ViewModel
         /// <param name="obj">The object.</param>
         private async void CommandReplaceExecute(object obj)
         {
+            //TODO implement cancellationToken
             if (this.IsBusy)
             {
                 return;
@@ -376,6 +382,7 @@ namespace FileExtensionRenamer.ViewModel
         /// <param name="obj">The object.</param>
         private async void CommandScanExecute(object obj)
         {
+            //TODO implement cancellationToken
             if (this.IsBusy)
             {
                 return;

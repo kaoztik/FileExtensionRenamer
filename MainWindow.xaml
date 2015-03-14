@@ -31,7 +31,7 @@
         <StackPanel Orientation="Horizontal"
                     IsEnabled="{Binding IsBusy, Converter={StaticResource NotBoolConverter}}"
                     Grid.Row="0">
-            <CheckBox Content="Remove Original Files (Use with Caution!)"
+            <CheckBox Content="Remove original files. (Use with Caution!)"
                       Margin="10 5 0 5"
                       IsChecked="{Binding ShouldRemove}" />
         </StackPanel>
@@ -39,16 +39,16 @@
                     IsEnabled="{Binding IsBusy, Converter={StaticResource NotBoolConverter}}"
                     Margin="5"
                     Grid.Row="1">
-            <Label Content="Fileextension to Remove:" />
+            <Label Content="Fileextension to remove:" />
             <TextBox Text="{Binding FileExtension}"
                      x:Name="FileExtensionTextBox"
                      MaxLength="10"
                      Width="80" />
-            <Label Content="Pick From File:" />
+            <Label Content="Pick from file:" />
             <Button Content="Pick"
                     Width="50"
                     Click="PickExtension_OnClick" />
-            <Label Content="Replace With:" />
+            <Label Content="Replace with:" />
             <TextBox Text="{Binding ReplaceExtension}"
                      Width="80"
                      MaxLength="10" />
@@ -57,7 +57,7 @@
                    Margin="5"
                    IsEnabled="{Binding IsBusy, Converter={StaticResource NotBoolConverter}}"
                    LastChildFill="True">
-            <Label Content="Rootfolder for Files" />
+            <Label Content="Rootfolder for files" />
             <Button Content="Pick"
                     Width="50"
                     Margin="10 0 10 0"

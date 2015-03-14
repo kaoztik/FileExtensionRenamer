@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -39,9 +40,11 @@ namespace FileExtensionRenamer
             return Task.Run(
                 () =>
                     {
+                        progress.Report(0);
                         var progressStep = (int)Math.Ceiling((decimal)100 / relativeFileList.Count());
                         var progressEvery = (int)Math.Ceiling(relativeFileList.Count() / (decimal)100);
                         int progressValue = 0;
+                        int i = 0;
                         Action<string, string> fileAction;
                         if (shouldRemove)
                         {
@@ -52,14 +55,16 @@ namespace FileExtensionRenamer
                             fileAction = File.Copy;
                         }
 
-                        for (int i = 0; i < relativeFileList.Count(); i++)
+                        foreach (string file in relativeFileList)
                         {
-                            string oldFileName = pathToRootDirectoy + relativeFileList[i];
-                            string newFileName = oldFileName.Remove(oldFileName.Length - oldExtension.Length + 1);
+                            string oldFileName = pathToRootDirectoy + file;
+                            string newFileName = oldFileName.Remove(oldFileName.Length - oldExtension.Length);
                             try
                             {
                                 fileAction(oldFileName, newFileName);
-                                resultQueue.Add(newFileName.Replace(pathToRootDirectoy, string.Empty), cancellationToken);
+                                resultQueue.Add(
+                                    newFileName.Replace(pathToRootDirectoy, string.Empty),
+                                    cancellationToken);
                             }
                             catch (Exception e)
                             {
@@ -71,11 +76,13 @@ namespace FileExtensionRenamer
                             {
                                 progress.Report(progressValue += progressStep);
                             }
+                            i++;
                         }
 
                         progress.Report(100);
                         resultQueue.CompleteAdding();
-                    }, cancellationToken);
+                    },
+                cancellationToken);
         }
 
         /// <summary>
@@ -103,9 +110,11 @@ namespace FileExtensionRenamer
             return Task.Run(
                 () =>
                     {
+                        progress.Report(0);
                         var progressStep = (int)Math.Ceiling((decimal)100 / relativeFileList.Count());
                         var progressEvery = (int)Math.Ceiling(relativeFileList.Count() / (decimal)100);
                         int progressValue = 0;
+                        int i = 0;
                         Action<string, string> fileAction;
                         if (shouldRemove)
                         {
@@ -115,16 +124,17 @@ namespace FileExtensionRenamer
                         {
                             fileAction = File.Copy;
                         }
-
-                        for (int i = 0; i < relativeFileList.Count(); i++)
+                        foreach (string file in relativeFileList)
                         {
-                            string oldFileName = pathToRootDirectoy + relativeFileList[i];
+                            string oldFileName = pathToRootDirectoy + file;
                             string newFileName = oldFileName.Remove(oldFileName.Length - oldExtension.Length)
                                                  + replaceString;
                             try
                             {
                                 fileAction(oldFileName, newFileName);
-                                resultQueue.Add(newFileName.Replace(pathToRootDirectoy, string.Empty));
+                                resultQueue.Add(
+                                    newFileName.Replace(pathToRootDirectoy, string.Empty),
+                                    cancellationToken);
                             }
                             catch (Exception e)
                             {
@@ -136,11 +146,13 @@ namespace FileExtensionRenamer
                             {
                                 progress.Report(progressValue += progressStep);
                             }
+                            i++;
                         }
 
                         progress.Report(100);
                         resultQueue.CompleteAdding();
-                    }, cancellationToken);
+                    },
+                cancellationToken);
         }
 
         /// <summary>
@@ -162,12 +174,16 @@ namespace FileExtensionRenamer
             return Task.Run(
                 () =>
                     {
+                        progress.Report(0);
                         string pattern = "*" + extensionToRemove;
-                        String[] allFiles;
+                        IEnumerable<string> allFiles;
                         try
                         {
                             //TODO Exclude Folder+Files where access is not allowed and bring up a warning message that not everything could be included.
-                            allFiles = Directory.GetFiles(pathToRootDirectory, pattern, SearchOption.AllDirectories);
+                            allFiles = Directory.EnumerateFiles(
+                                pathToRootDirectory,
+                                pattern,
+                                SearchOption.AllDirectories);
                         }
                         catch (Exception e)
                         {
@@ -175,18 +191,22 @@ namespace FileExtensionRenamer
                             return;
                         }
 
-                        var progressStep = (int)Math.Ceiling((decimal)100 / allFiles.Length);
-                        var progressEvery = (int)Math.Ceiling(allFiles.Length / (decimal)100);
-                        int progressValue = 0;
-
-                        for (int i = 0; i < allFiles.Length; i++)
+                        if (allFiles.Any())
                         {
-                            // TODO scan all files in advance if there might be a conflict.
-                            resultQueue.Add(allFiles[i].Replace(pathToRootDirectory, string.Empty));
-                            cancellationToken.ThrowIfCancellationRequested();
-                            if (i % progressEvery == 0)
+                            var progressStep = (int)Math.Ceiling((decimal)100 / allFiles.Count());
+                            var progressEvery = (int)Math.Ceiling(allFiles.Count() / (decimal)100);
+                            int progressValue = 0;
+                            int i = 0;
+
+                            foreach (string file in allFiles)
                             {
-                                progress.Report(progressValue += progressStep);
+                                resultQueue.Add(file.Replace(pathToRootDirectory, string.Empty), cancellationToken);
+                                cancellationToken.ThrowIfCancellationRequested();
+                                if (i % progressEvery == 0)
+                                {
+                                    progress.Report(progressValue += progressStep);
+                                }
+                                i++;
                             }
                         }
 

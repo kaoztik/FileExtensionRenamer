@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Windows;
 
 using FileExtensionRenamer.ViewModel;
@@ -45,8 +46,8 @@ namespace FileExtensionRenamer
                 var vm = this.DataContext as MainViewModel;
                 if (vm != null)
                 {
-                    string extension = dialog.FileName.Split('.').LastOrDefault();
-                    vm.FileExtension = "." + extension;
+                    vm.FileExtension = "." + dialog.SafeFileName.Split('.').LastOrDefault();
+                    vm.RootFolder = Path.GetDirectoryName(dialog.FileName);
                 }
             }
         }
