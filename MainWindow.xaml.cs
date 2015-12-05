@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Forms;
 
 using FileExtensionRenamer.ViewModel;
 
 using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace FileExtensionRenamer
 {
@@ -36,7 +36,7 @@ namespace FileExtensionRenamer
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void PickExtension_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog();
+            var dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.CheckFileExists = true;
             dialog.Multiselect = false;
             bool? result = dialog.ShowDialog();
@@ -59,15 +59,13 @@ namespace FileExtensionRenamer
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void PickFolder_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-            dialog.Multiselect = false;
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            var dialog = new FolderBrowserDialog();
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var vm = this.DataContext as MainViewModel;
                 if (vm != null)
                 {
-                    vm.RootFolder = dialog.FileName;
+                    vm.RootFolder = dialog.SelectedPath;
                 }
             }
         }

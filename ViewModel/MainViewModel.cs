@@ -13,6 +13,20 @@ namespace FileExtensionRenamer.ViewModel
     /// </summary>
     public class MainViewModel : BaseViewModel
     {
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainViewModel" /> class.
+        /// </summary>
+        public MainViewModel()
+        {
+            UntouchedFiles = new ObservableCollection<string>();
+            CorrectedFiles = new ObservableCollection<string>();
+            ProgressValue = 0;
+        }
+
+        #endregion
+
         #region Fields
 
         private DelegateCommand _commandReplace;
@@ -39,20 +53,6 @@ namespace FileExtensionRenamer.ViewModel
 
         #endregion
 
-        #region Constructors and Destructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MainViewModel" /> class.
-        /// </summary>
-        public MainViewModel()
-        {
-            this.UntouchedFiles = new ObservableCollection<string>();
-            this.CorrectedFiles = new ObservableCollection<string>();
-            this.ProgressValue = 0;
-        }
-
-        #endregion
-
         #region Public Properties
 
         /// <summary>
@@ -62,14 +62,8 @@ namespace FileExtensionRenamer.ViewModel
         /// The command replace.
         /// </value>
         public DelegateCommand CommandReplace
-        {
-            get
-            {
-                return this._commandReplace
-                       ?? (this._commandReplace =
-                           new DelegateCommand(this.CommandReplaceExecute, this.CommandReplaceCanExecute));
-            }
-        }
+            => _commandReplace ??
+               (_commandReplace = new DelegateCommand(CommandReplaceExecute, CommandReplaceCanExecute));
 
         /// <summary>
         /// Gets the command scan.
@@ -81,8 +75,7 @@ namespace FileExtensionRenamer.ViewModel
         {
             get
             {
-                return this._commandScan
-                       ?? (this._commandScan = new DelegateCommand(this.CommandScanExecute, this.CommandScanCanExecute));
+                return _commandScan ?? (_commandScan = new DelegateCommand(CommandScanExecute, CommandScanCanExecute));
             }
         }
 
@@ -94,16 +87,13 @@ namespace FileExtensionRenamer.ViewModel
         /// </value>
         public ObservableCollection<string> CorrectedFiles
         {
-            get
-            {
-                return this._correctedFiles;
-            }
+            get { return _correctedFiles; }
             set
             {
-                if (value != this._correctedFiles)
+                if (value != _correctedFiles)
                 {
-                    this._correctedFiles = value;
-                    this.RaisePropertyChanged(() => this.CorrectedFiles);
+                    _correctedFiles = value;
+                    RaisePropertyChanged(() => CorrectedFiles);
                 }
             }
         }
@@ -116,19 +106,16 @@ namespace FileExtensionRenamer.ViewModel
         /// </value>
         public string FileExtension
         {
-            get
-            {
-                return this._fileExtension;
-            }
+            get { return _fileExtension; }
             set
             {
-                if (value != this._fileExtension)
+                if (value != _fileExtension)
                 {
-                    this._fileExtension = value;
-                    this.RaisePropertyChanged(() => this.FileExtension);
-                    this._scanned = false;
-                    this.CommandReplace.RaiseCanExecuteChanged();
-                    this.CommandScan.RaiseCanExecuteChanged();
+                    _fileExtension = value;
+                    RaisePropertyChanged(() => FileExtension);
+                    _scanned = false;
+                    CommandReplace.RaiseCanExecuteChanged();
+                    CommandScan.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -141,16 +128,13 @@ namespace FileExtensionRenamer.ViewModel
         /// </value>
         public bool IsBusy
         {
-            get
-            {
-                return this._isBusy;
-            }
+            get { return _isBusy; }
             set
             {
-                if (value != this._isBusy)
+                if (value != _isBusy)
                 {
-                    this._isBusy = value;
-                    this.RaisePropertyChanged(() => this.IsBusy);
+                    _isBusy = value;
+                    RaisePropertyChanged(() => IsBusy);
                 }
             }
         }
@@ -163,16 +147,13 @@ namespace FileExtensionRenamer.ViewModel
         /// </value>
         public int ProgressValue
         {
-            get
-            {
-                return this._progressValue;
-            }
+            get { return _progressValue; }
             set
             {
-                if (value != this._progressValue)
+                if (value != _progressValue)
                 {
-                    this._progressValue = value;
-                    this.RaisePropertyChanged(() => this.ProgressValue);
+                    _progressValue = value;
+                    RaisePropertyChanged(() => ProgressValue);
                 }
             }
         }
@@ -185,16 +166,13 @@ namespace FileExtensionRenamer.ViewModel
         /// </value>
         public string ReplaceExtension
         {
-            get
-            {
-                return this._replaceExtension;
-            }
+            get { return _replaceExtension; }
             set
             {
-                if (value != this._replaceExtension)
+                if (value != _replaceExtension)
                 {
-                    this._replaceExtension = value;
-                    this.RaisePropertyChanged(() => this.ReplaceExtension);
+                    _replaceExtension = value;
+                    RaisePropertyChanged(() => ReplaceExtension);
                 }
             }
         }
@@ -207,19 +185,16 @@ namespace FileExtensionRenamer.ViewModel
         /// </value>
         public string RootFolder
         {
-            get
-            {
-                return this._rootFolder;
-            }
+            get { return _rootFolder; }
             set
             {
-                if (value != this._rootFolder)
+                if (value != _rootFolder)
                 {
-                    this._rootFolder = value;
-                    this.RaisePropertyChanged(() => this.RootFolder);
-                    this._scanned = false;
-                    this.CommandReplace.RaiseCanExecuteChanged();
-                    this.CommandScan.RaiseCanExecuteChanged();
+                    _rootFolder = value;
+                    RaisePropertyChanged(() => RootFolder);
+                    _scanned = false;
+                    CommandReplace.RaiseCanExecuteChanged();
+                    CommandScan.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -228,21 +203,19 @@ namespace FileExtensionRenamer.ViewModel
         /// Gets or sets a value indicating whether the files should be removed from the Filesystem.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the files should be removed from the Filesystem; otherwise, a copy with the new filename will be created
+        /// <c>true</c> if the files should be removed from the Filesystem; otherwise, a copy with the new filename will be
+        /// created
         /// <c>false</c>.
         /// </value>
         public bool ShouldRemove
         {
-            get
-            {
-                return this._shouldRemove;
-            }
+            get { return _shouldRemove; }
             set
             {
-                if (value != this._shouldRemove)
+                if (value != _shouldRemove)
                 {
-                    this._shouldRemove = value;
-                    this.RaisePropertyChanged(() => this.ShouldRemove);
+                    _shouldRemove = value;
+                    RaisePropertyChanged(() => ShouldRemove);
                 }
             }
         }
@@ -255,16 +228,13 @@ namespace FileExtensionRenamer.ViewModel
         /// </value>
         public ObservableCollection<string> UntouchedFiles
         {
-            get
-            {
-                return this._untouchedFiles;
-            }
+            get { return _untouchedFiles; }
             set
             {
-                if (value != this._untouchedFiles)
+                if (value != _untouchedFiles)
                 {
-                    this._untouchedFiles = value;
-                    this.RaisePropertyChanged(() => this.UntouchedFiles);
+                    _untouchedFiles = value;
+                    RaisePropertyChanged(() => UntouchedFiles);
                 }
             }
         }
@@ -280,7 +250,7 @@ namespace FileExtensionRenamer.ViewModel
         /// <returns></returns>
         private bool CommandReplaceCanExecute(object obj)
         {
-            return this.UntouchedFiles.Any() && this._scanned;
+            return UntouchedFiles.Any() && _scanned;
         }
 
         /// <summary>
@@ -290,13 +260,13 @@ namespace FileExtensionRenamer.ViewModel
         private async void CommandReplaceExecute(object obj)
         {
             //TODO implement cancellationToken
-            if (this.IsBusy)
+            if (IsBusy)
             {
                 return;
             }
 
-            this.IsBusy = true;
-            CancellationToken token = CancellationToken.None;
+            IsBusy = true;
+            var token = CancellationToken.None;
             try
             {
                 var result = new BlockingCollection<string>();
@@ -304,55 +274,55 @@ namespace FileExtensionRenamer.ViewModel
                 //Producer
                 Task task;
 
-                this.FileExtension = this.FileExtension.StartsWith(".") ? this.FileExtension : "." + this.FileExtension;
+                FileExtension = FileExtension.StartsWith(".") ? FileExtension : "." + FileExtension;
 
-                if (string.IsNullOrEmpty(this.ReplaceExtension))
+                if (string.IsNullOrEmpty(ReplaceExtension))
                 {
                     // just remove
                     task = RenamerCore.RemoveExtensions(
-                        this.ShouldRemove,
-                        this.RootFolder,
-                        this.FileExtension,
-                        this.UntouchedFiles,
+                        ShouldRemove,
+                        RootFolder,
+                        FileExtension,
+                        UntouchedFiles,
                         result,
                         token,
-                        new Progress<int>(progress => this.ProgressValue = progress));
+                        new Progress<int>(progress => ProgressValue = progress));
                 }
                 else
                 {
-                    this.ReplaceExtension = this.ReplaceExtension.StartsWith(".")
-                                                ? this.ReplaceExtension
-                                                : "." + this.ReplaceExtension;
+                    ReplaceExtension = ReplaceExtension.StartsWith(".")
+                        ? ReplaceExtension
+                        : "." + ReplaceExtension;
                     //Replace
                     task = RenamerCore.ReplaceExtensions(
-                        this.ShouldRemove,
-                        this.RootFolder,
-                        this.FileExtension,
-                        this.ReplaceExtension,
-                        this.UntouchedFiles,
+                        ShouldRemove,
+                        RootFolder,
+                        FileExtension,
+                        ReplaceExtension,
+                        UntouchedFiles,
                         result,
                         token,
-                        new Progress<int>(progress => this.ProgressValue = progress));
+                        new Progress<int>(progress => ProgressValue = progress));
                 }
 
                 //Consumer
-                SynchronizationContext synchContext = SynchronizationContext.Current;
+                var synchContext = SynchronizationContext.Current;
                 await Task.Run(
                     () =>
+                    {
+                        Action<string> addAction = i => CorrectedFiles.Add(i);
+                        foreach (var item in result.GetConsumingEnumerable(token))
                         {
-                            Action<string> addAction = i => this.CorrectedFiles.Add(i);
-                            foreach (string item in result.GetConsumingEnumerable(token))
+                            if (synchContext != null)
                             {
-                                if (synchContext != null)
-                                {
-                                    synchContext.Post(action => addAction(item), null);
-                                }
-                                else
-                                {
-                                    addAction(item);
-                                }
+                                synchContext.Post(action => addAction(item), null);
                             }
-                        });
+                            else
+                            {
+                                addAction(item);
+                            }
+                        }
+                    });
 
                 await task;
             }
@@ -361,9 +331,9 @@ namespace FileExtensionRenamer.ViewModel
                 MessageBox.Show("Error while replacing" + Environment.NewLine + e.Message, "Error", MessageBoxButton.OK);
             }
 
-            this._scanned = false;
-            this.IsBusy = false;
-            this.CommandReplace.RaiseCanExecuteChanged();
+            _scanned = false;
+            IsBusy = false;
+            CommandReplace.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -373,7 +343,7 @@ namespace FileExtensionRenamer.ViewModel
         /// <returns></returns>
         private bool CommandScanCanExecute(object obj)
         {
-            return !string.IsNullOrEmpty(this.FileExtension) && !string.IsNullOrEmpty(this.RootFolder);
+            return !string.IsNullOrEmpty(FileExtension) && !string.IsNullOrEmpty(RootFolder);
         }
 
         /// <summary>
@@ -383,45 +353,45 @@ namespace FileExtensionRenamer.ViewModel
         private async void CommandScanExecute(object obj)
         {
             //TODO implement cancellationToken
-            if (this.IsBusy)
+            if (IsBusy)
             {
                 return;
             }
 
-            this.IsBusy = true;
-            this.CorrectedFiles.Clear();
-            CancellationToken token = CancellationToken.None;
+            IsBusy = true;
+            CorrectedFiles.Clear();
+            var token = CancellationToken.None;
             try
             {
-                this.UntouchedFiles.Clear();
+                UntouchedFiles.Clear();
                 var result = new BlockingCollection<string>();
 
                 //Producer
-                Task task = RenamerCore.ScanDirectory(
-                    this.RootFolder,
-                    this.FileExtension,
+                var task = RenamerCore.ScanDirectory(
+                    RootFolder,
+                    FileExtension,
                     result,
                     token,
-                    new Progress<int>(progress => this.ProgressValue = progress));
+                    new Progress<int>(progress => ProgressValue = progress));
 
                 //Consumer
-                SynchronizationContext synchContext = SynchronizationContext.Current;
+                var synchContext = SynchronizationContext.Current;
                 await Task.Run(
                     () =>
+                    {
+                        Action<string> addAction = i => UntouchedFiles.Add(i);
+                        foreach (var item in result.GetConsumingEnumerable(token))
                         {
-                            Action<string> addAction = i => this.UntouchedFiles.Add(i);
-                            foreach (string item in result.GetConsumingEnumerable(token))
+                            if (synchContext != null)
                             {
-                                if (synchContext != null)
-                                {
-                                    synchContext.Post(action => addAction(item), null);
-                                }
-                                else
-                                {
-                                    addAction(item);
-                                }
+                                synchContext.Post(action => addAction(item), null);
                             }
-                        });
+                            else
+                            {
+                                addAction(item);
+                            }
+                        }
+                    });
 
                 await task;
             }
@@ -430,9 +400,9 @@ namespace FileExtensionRenamer.ViewModel
                 MessageBox.Show("Error while Scanning" + Environment.NewLine + e.Message, "Error", MessageBoxButton.OK);
             }
 
-            this._scanned = true;
-            this.IsBusy = false;
-            this.CommandReplace.RaiseCanExecuteChanged();
+            _scanned = true;
+            IsBusy = false;
+            CommandReplace.RaiseCanExecuteChanged();
         }
 
         #endregion
